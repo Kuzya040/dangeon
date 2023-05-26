@@ -1,5 +1,4 @@
 from pygame import *
-from time import sleep
 image1 = image.load('background.png')
 image2 = image.load('player.png')
 image3 = image.load('monster.png')
@@ -43,21 +42,23 @@ class Player(GameSprite):
             
     def player_i(self):
         keys = key.get_pressed()
-        if keys[K_SPACE]:
+        if keys[K_SPACE] and self.rect.bottom >=700:
+            self.gravity -=20
             for p in platforms:
-                if p.rect.y == player.rect.y or self.rect.y <=700:
+                if self.rect.bottom == p.rect.y:
                     self.gravity -=20
+
+
+
+
     def apl_gravity(self):
         self.gravity +=1
         self.rect.y += self.gravity
-        for p in platforms:
-            if player.rect.y >=850:
-                if player.rect.y == p.rect.y + 20:
-                    self.gravity +=20
+        if self.rect.bottom >= 700:
+            self.rect.bottom = 700
         for plat in platforms:
             if self.rect.colliderect(plat.rect):
                 self.rect.bottom = plat.rect.y
-                
 class Enemy(GameSprite):
     def update(self):
         if self.rect.x <= 550:
@@ -83,7 +84,7 @@ class Wall(GameSprite):
     def draw(self):
         win.blit(self.image, (self.rect.x,self.rect.y))
 lavas = sprite.Group()
-player = Player(image2,0,560,55,75,20)      
+player = Player(image2,0,460,55,75,15)      
 monster = Enemy(image3,800,70,100,175,5)
 platforms = sprite.Group()
 platforms.add(
@@ -102,7 +103,7 @@ platforms.add(
     Wall(image4,940,150,155,55,0),
     Wall(image4,740,75,155,55,0),
     Wall(image4,630,75,155,55,0))
-door = Wall(image6,657,-15,155,130,0)
+door = Wall(image6,695,-15,125,100,0)
 hearts =sprite.Group()
 hearts.add(
     Wall(image8,0,0,100,100,0),
@@ -134,7 +135,7 @@ while game:
             player = Player(image2,1230,560,55,75,20)
         if sprite.spritecollide(player,lavas,False):
             hearts1 -= 1
-            player.rect.x +=50
+            player.rect.x +=100
         if hearts1 == 2:
             hearts =sprite.Group()
             hearts.add(
@@ -160,14 +161,18 @@ while game:
                 Wall(image4,430,310,155,55,0),
                 Wall(image4,250,430,155,55,0),
                 Wall(image4,80,340,155,55,0),
-                Wall(image4,125,70,155,55,0),
-                Wall(image4,1300,270,155,55,0))
-
+                Wall(image4,230,170,155,55,0),
+                Wall(image4,1300,270,155,55,0),
+                Wall(image4,1090,267,155,55,0))
+            door1 = Wall(image6,1300,175,125,100,0)
+            door = Wall(image6,250,70,125,100,0)
             win.blit(bk,(0,0))
             player.update()
             player.player_i()
             player.apl_gravity()
             player.reset()
+            door.reset()
+            door1.reset()
 
         for p in platforms:
             p.reset()
@@ -216,7 +221,7 @@ while game:
                 Wall(image4,430,310,155,55,0),
                 Wall(image4,250,430,155,55,0),
                 Wall(image4,80,340,155,55,0),
-                Wall(image4,125,70,155,55,0),
+                Wall(image4,125,270,155,55,0),
                 Wall(image4,1300,270,155,55,0))
         for h in hearts:
             h.reset()
