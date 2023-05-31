@@ -1,6 +1,5 @@
 from pygame import *
 from time import time as sec
-from time import sleep
 image1 = image.load('background.png')
 image2 = image.load('player.png')
 image3 = image.load('monster.png')
